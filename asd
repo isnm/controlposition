@@ -47,14 +47,14 @@ std::vector<double> GetIK(geometry_msgs::Pose &_ps);
 geometry_msgs::Pose jsCartesian(const sensor_msgs::JointState &_js, std::vector<double> &_pose);
  
 void jointCallback(const sensor_msgs::JointState msg){
-     ROS_INFO("%f,%f,%f,%f,%f,%f", msg.position[0],msg.position[1],msg.position[2],msg.position[3],msg.position[4],msg.position[5]);
+     //ROS_INFO("%f,%f,%f,%f,%f,%f", msg.position[0],msg.position[1],msg.position[2],msg.position[3],msg.position[4],msg.position[5]);
      for(int i=0; i<6; i++) {
         currentjoint[i] = msg.position[i];
              
     }
 }
 void joyCallback(const sensor_msgs::Joy msg){
-    ROS_INFO("joyCallback : %s", msg.header.frame_id.c_str());
+    //ROS_INFO("joyCallback : %s", msg.header.frame_id.c_str());
 
     //ปุ่มอนาล็อคซ้าย ขยับซ้าย << หมายถึงปุ่มไม่ใช่หุ่น (ขยับฐาน)
     if(msg.axes[0] > 0.25 && state == 0){
@@ -163,197 +163,202 @@ int main(int argc, char **argv)
   ros::Rate loop_rate(1000);
   while (ros::ok()){
   	  if(ret && state == 1){
-			ROS_INFO("state 1");//move left ปุ่มอนาล็อคซ้าย ขยับซ้าย
-		   geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.x-0.1; 
-			GetIK(cartesian);
-		
+			  ROS_INFO("state 1");//move left ปุ่มอนาล็อคซ้าย ขยับซ้าย
+		    geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
+        ROS_INFO("call fk");
+			  cartesian.position.x-0.5; 
+        ROS_INFO("x-0.5");
+			  GetIK(cartesian);
+		    ROS_INFO("getik");
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        ROS_INFO("moving");
       	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+        ROS_INFO("Moved");
 		}
+        
       else if(ret && state == 2)
       {
-			ROS_INFO("state 2");//move right ปุ่มอนาล็อคซ้าย ขยับขวา 
-      	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.x+0.1;
-			GetIK(cartesian);
+			  ROS_INFO("state 2");//move right ปุ่มอนาล็อคซ้าย ขยับขวา 
+        geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
+			  cartesian.position.x+0.1;
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
         	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 3)
       {
-			ROS_INFO("state 3"); //move up ปุ่มอนาล็อคซ้ายขยับขึ้น
+			  ROS_INFO("state 3"); //move up ปุ่มอนาล็อคซ้ายขยับขึ้น
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.z+0.1;
-			GetIK(cartesian);
+			  cartesian.position.z+0.1;
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 4)
       {
-			ROS_INFO("state 4"); //move down ปุ่มอนาล็อคซ้ายขยับลง 
+			  ROS_INFO("state 4"); //move down ปุ่มอนาล็อคซ้ายขยับลง 
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.z-0.1;
-			GetIK(cartesian);
+			  cartesian.position.z-0.1;
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }	
       else if(ret && state == 5)
       {
-			ROS_INFO("state 5"); //move backward (maybe) ปุ่มอนาล็อคขวาขยับขึ้น
+			  ROS_INFO("state 5"); //move backward (maybe) ปุ่มอนาล็อคขวาขยับขึ้น
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.y-0.1;
-			GetIK(cartesian);
+			  cartesian.position.y-0.1;
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 6)
       {
-			ROS_INFO("state 6"); //move forward (maybe) ปุ่มอนาล็อคขวาขยับลง
+			  ROS_INFO("state 6"); //move forward (maybe) ปุ่มอนาล็อคขวาขยับลง
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
-			cartesian.position.y+0.1;
-			GetIK(cartesian);
+			  cartesian.position.y+0.1;
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 11)
       {
-			ROS_INFO("state 11"); //yaw (rotate z) D-pad left
+			  ROS_INFO("state 11"); //yaw (rotate z) D-pad left
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			yaw-0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  yaw-0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+			  rpytoq = rpytoq.normalize();
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 12)
       {
-			ROS_INFO("state 12"); //yaw (rotate z) D-pad right
+			  ROS_INFO("state 12"); //yaw (rotate z) D-pad right
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			yaw+0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  yaw+0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+			  rpytoq = rpytoq.normalize();
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 7)
       {
-			ROS_INFO("state 7"); //roll (rotate x) right analog go right
+			  ROS_INFO("state 7"); //roll (rotate x) right analog go right
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			roll+0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  roll+0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+			  rpytoq = rpytoq.normalize();
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 8)
       {
-			ROS_INFO("state 8"); //roll (rotate x) right analog go left
+			  ROS_INFO("state 8"); //roll (rotate x) right analog go left
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			roll-0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  roll-0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+			  rpytoq = rpytoq.normalize();
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 9)
       {
-			ROS_INFO("state 9"); //pitch (rotate y) ปุ่มลูกศรขึ้น
+			  ROS_INFO("state 9"); //pitch (rotate y) ปุ่มลูกศรขึ้น
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			pitch-0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  pitch-0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+		  	rpytoq = rpytoq.normalize();
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
       else if(ret && state == 10)
       {
-			ROS_INFO("state 10"); //pitch (rotate y) ปุ่มลูกศรลง
+			  ROS_INFO("state 10"); //pitch (rotate y) ปุ่มลูกศรลง
       	geometry_msgs::Pose cartesian = jsCartesian(js, rpy);
     		tf::Quaternion qtorpy;
     		tf::quaternionMsgToTF(cartesian.orientation , qtorpy);
     		tf::Matrix3x3 m(qtorpy);
-			m.getRPY(roll, pitch, yaw);
-			pitch+0.1;
-			tf::Quaternion rpytoq;
-			rpytoq.setRPY(roll,pitch,yaw);
-			rpytoq = rpytoq.normalize();
+			  m.getRPY(roll, pitch, yaw);
+			  pitch+0.1;
+			  tf::Quaternion rpytoq;
+			  rpytoq.setRPY(roll,pitch,yaw);
+			  rpytoq = rpytoq.normalize();
 			
 						
-			GetIK(cartesian);
+			  GetIK(cartesian);
       	fromik = GetIK(cartesian);		
-			for(int i=0;i<6;i++){
-				targetjoint[i] = fromik[i];
-			}
-        	robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
+			  for(int i=0;i<6;i++){
+				  targetjoint[i] = fromik[i];
+			  }
+        robot_driver.robot_send_service_.robotServiceJointMove(targetjoint, true);
       }
 
 	
@@ -374,7 +379,7 @@ std::vector<double> GetIK(geometry_msgs::Pose &_ps){
       msg.request.ik_request.attempts = 0;
       ros::ServiceClient srv_ik = rn->n->serviceClient<moveit_msgs::GetPositionIK>("/compute_ik");
       if(srv_ik.call(msg)){
-          ROS_INFO("%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",msg.response.solution.joint_state.position[0]*180/M_PI,msg.response.solution.joint_state.position[1]*180/M_PI,msg.response.solution.joint_state.position[2]*180/M_PI,msg.response.solution.joint_state.position[3]*180/M_PI,msg.response.solution.joint_state.position[4]*180/M_PI,msg.response.solution.joint_state.position[5]*180/M_PI);
+          ROS_INFO("joint from IK :%.3f,%.3f,%.3f,%.3f,%.3f,%.3f",msg.response.solution.joint_state.position[0]*180/M_PI,msg.response.solution.joint_state.position[1]*180/M_PI,msg.response.solution.joint_state.position[2]*180/M_PI,msg.response.solution.joint_state.position[3]*180/M_PI,msg.response.solution.joint_state.position[4]*180/M_PI,msg.response.solution.joint_state.position[5]*180/M_PI);
 	  
       }
       else{
@@ -382,13 +387,15 @@ std::vector<double> GetIK(geometry_msgs::Pose &_ps){
       }
 	  return msg.response.solution.joint_state.position;
   }
-geometry_msgs::Pose jsCartesian(const sensor_msgs::JointState &_js, std::vector<double> &_pose){
+  geometry_msgs::Pose jsCartesian(const sensor_msgs::JointState &_js, std::vector<double> &_pose){
   moveit_msgs::GetPositionFK msg;
   msg.request.header.stamp = ros::Time::now();
   msg.request.fk_link_names = {"wrist3_Link"};
   msg.request.robot_state.joint_state = _js;
   ros::ServiceClient srv_fk = rn->n->serviceClient<moveit_msgs::GetPositionFK>("/compute_fk");
+  ROS_INFO("calling fk");
   if(srv_fk.call(msg)){
+    ROS_INFO("call fk");
     _pose[0] = msg.response.pose_stamped[0].pose.position.x;
     _pose[1] = msg.response.pose_stamped[0].pose.position.y;
     _pose[2] = msg.response.pose_stamped[0].pose.position.z; 
@@ -400,6 +407,7 @@ geometry_msgs::Pose jsCartesian(const sensor_msgs::JointState &_js, std::vector<
     _pose[3] = r;
     _pose[4] = p;
     _pose[5] = y;
+    ROS_INFO("position from fK XYZ:%.3f,%.3f,%.3f RPY :%.3f,%.3f,%.3f",_pose[0],_pose[1],_pose[2],_pose[3]*180/M_PI,_pose[4]*180/M_PI,_pose[5]*180/M_PI);
   }
   else{
     ROS_ERROR("Failed to call srv");
